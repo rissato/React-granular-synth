@@ -31,7 +31,7 @@ npm start
 Or build the project and run with docker:
 
 ```
-npm build
+npm run build
 docker compose up --build
 ```
 

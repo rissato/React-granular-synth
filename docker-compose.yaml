@@ -1,7 +1,7 @@
 services:
-  restart: always
   nginx:
     build: .
+    restart: always
     ports:
       - 80:80
     volumes:

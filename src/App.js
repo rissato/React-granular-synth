@@ -60,18 +60,20 @@ function App() {
 
     const [playerState, setPlayerState] = useState({
         attack: 20,
+        sustain: 1000,
+        release: 20,
+        density: 32,
+        // densitySlider: 500,
         buffer: null,
         context: null,
-        density: 500,
         gain: 0.3,
         output: null,
         pan: 1,
         playbackRate: 1,
+        transpose: 0,
         position: 0.5,
-        release: 20,
         run: false,
         spread: 0.2,
-        sustain: 100
     });
 
     useEffect(() => {
@@ -81,6 +83,9 @@ function App() {
             ...playerState,
             context: context
         });
+
+        // startMIDI();
+
         // eslint-disable-next-line
     }, []);
 
@@ -110,6 +115,34 @@ function App() {
         setPlayerState({
             ...playerState,
             [prop]: Number.parseFloat(val)
+        });
+    };
+
+    // const setDensityValue = (val) => {
+    //     const minp = 0.1;
+    //     var maxp = 1000;
+
+    //     var minv = Math.log(minp);
+    //     var maxv = Math.log(maxp);
+    //     var scale = (maxv-minv) / (maxp-minp);
+    //     const value = Math.exp(minv + scale * (val - minp));
+    //     console.log("density", value);
+
+    //     setPlayerState({
+    //         ...playerState,
+    //         density: Number.parseFloat(value),
+    //         densitySlider: Number.parseFloat(val),
+    //         sustain: 1000 / Number.parseFloat(value)
+    //     });
+    // };
+
+    const setTranspose = (val) => {
+        const power = val / 12
+        const rate  = Math.pow(2, power);
+        setPlayerState({
+            ...playerState,
+            transpose: Number.parseFloat(val),
+            playbackRate: rate
         });
     };
 
@@ -204,31 +237,33 @@ function App() {
                         </div>
                     </Space>
                     <Space direction="horizontal" style={sliderSpaceStyle} size={0}>
-                        <div style={sliderDivStyle}>
+                        {/* <div style={sliderDivStyle}>
                             <Slider vertical value={playerState.attack} onChange={val => setValue(val, 'attack')} 
-                                min={5} max={200} step={1}/>
+                                min={5} max={500} step={1}/>
                             <h1 style={sliderLabelStyle}>A</h1>
                         </div>
 
+                         */}
+                        <div style={sliderDivStyle}>
+                            <Slider vertical value={playerState.density} onChange={val => setValue(val,'density')} 
+                                min={1} max={64} step={1}/>
+                            <h1 style={sliderLabelStyle}>D</h1>
+                        </div>
                         <div style={sliderDivStyle}>
                             <Slider vertical value={playerState.sustain} onChange={val => setValue(val,'sustain')} 
-                                min={0} max={200} step={1}/>
+                                min={100} max={5000} step={1}/>
                             <h1 style={sliderLabelStyle}>S</h1>
                         </div>
                         <div style={sliderDivStyle}>
                             <Slider vertical value={playerState.release} onChange={val => setValue(val,'release')} 
-                                min={5} max={1000} step={1}/>
+                                min={10} max={5000} step={1}/>
                             <h1 style={sliderLabelStyle}>R</h1>
                         </div>
+                        
                         <div style={sliderDivStyle}>
-                            <Slider vertical value={playerState.density} onChange={val => setValue(val, 'density')} 
-                                min={10} max={200} step={1}/>
-                            <h1 style={sliderLabelStyle}>D</h1>
-                        </div>
-                        <div style={sliderDivStyle}>
-                            <Slider vertical value={playerState.playbackRate} onChange={val => setValue(val, 'playbackRate')} 
-                                min={0} max={2} step={0.001}/>
-                            <h1 style={sliderLabelStyle}>R</h1>
+                            <Slider vertical value={playerState.transpose} onChange={val => setTranspose(val)} 
+                                min={-24} max={24} step={1}/>
+                            <h1 style={sliderLabelStyle}>T</h1>
                         </div>
                         <div style={sliderDivStyle}>
                             <Slider vertical value={playerState.pan} onChange={val => setValue(val, 'pan')} 

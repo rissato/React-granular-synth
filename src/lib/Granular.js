@@ -24,9 +24,6 @@ class Granular extends React.Component {
   }
 
   componentWillReceiveProps(next) {
-    console.log("-============================")
-    console.log("density", next.density, this.props.density);
-    console.log("run", next.run, this.props.run);
     if (next.run !== this.props.run) {
       // Detect if we need to start or stop the engine
       if (next.run) {
@@ -36,11 +33,11 @@ class Granular extends React.Component {
       }
     } else if (next.density !== this.props.density && this.state.interval) {
       // A change in density means we have to adust the interval time
-      console.log("change in density ")
-      console.log("will clear interval", this.state.interval)
       clearInterval(this.state.interval);
+      //Plays the first time 
+      setTimeout(this.tick, 0);
+      //Setup the interval for repeating.
       const newInterval = setInterval(this.tick, 1000 / next.density);
-      console.log("new interval", newInterval);
       this.setState({
         ...this.state,
         interval: newInterval
@@ -75,7 +72,12 @@ class Granular extends React.Component {
     // this.setState(state => ({
     //   interval: setInterval(this.tick, 1000 / this.props.density)
     // }));
-    const interval = setInterval(this.tick, 1000 / this.props.density);
+    const tickInterval = 1000 / this.props.density;
+    console.log("tickInterval", tickInterval);
+    //Plays the first time 
+    setTimeout(this.tick, 0);
+    //Setup the interval for repeating.
+    const interval = setInterval(this.tick, tickInterval);
     console.log("new interval:", interval)
     this.setState({
       interval: interval
@@ -85,7 +87,6 @@ class Granular extends React.Component {
 
   stop = () => {
     // Stop the interval
-    console.log("clear interval:", this.state.interval)
     if (this.state.interval) {
       clearInterval(this.state.interval);
     }
@@ -97,6 +98,7 @@ class Granular extends React.Component {
 
   tick = () => {
     // Find a grain that isn't busy
+    console.log("tick");
     let grain = this.state.grains.find(g => !g.busy);
     try {
       if (!grain) {

@@ -1,3 +1,5 @@
+import { WebMidi } from "webmidi";
+
 /**
  * Create Gain node using context at supplied velocity
  * context - Audio Context
@@ -41,6 +43,7 @@ const createPan = (context, pan) => {
  * Get the window audio context
  */
 export const getContext = () => {
+
     window.AudioContext =
         window.AudioContext ||
         window.webkitAudioContext ||
@@ -49,6 +52,36 @@ export const getContext = () => {
     const context = new AudioContext();
     return context;
 };
+
+export const onMIDIEnabled = () => {
+  
+  // Inputs
+  console.log('MIDI Inputs:');
+  WebMidi.inputs.forEach(input => console.log(input.manufacturer, input.name));
+  // Outputs
+  console.log('MIDI Outputs:');
+  WebMidi.outputs.forEach(output => console.log(output.manufacturer, output.name));
+}
+
+export const startMIDI = () => {
+  WebMidi
+  .enable()
+  .then(onMIDIEnabled)
+  .catch(err => alert(err));
+
+  const myInput = WebMidi.getInputByName("DFU̒");
+  myInput.addListener("midimessage", e => {
+    console.log(e);
+  })
+
+  // myInput.addListener("start", e => {
+  //   console.log("start");
+  // })
+  
+};
+
+
+
 /**
  * Get the grain's start positin in the audio buffer
  * duration - how long the audio buffer is
